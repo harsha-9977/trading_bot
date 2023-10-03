@@ -1,91 +1,61 @@
-# define asset
-    # IN: keyboard
-    # OUT: string
+# encoding: utf-8
 
-# LOOP until timeout reached (ex. 2h)
-# POINT "ECHO": INITIAL CHECK --- coming to "ECHO"
+# import needed libraries
+#from traderlib import *
+from logger import *
+import sys
 
-# Check the Position : Ask the broker/API if we have an open position with "ASSET"
-    # IN: asset (string)
-    # OUT: True (exists) / False (does not exist)
+import alpaca_trade_api as tradeapi
 
-# Check if Tradable : Ask the broker/API if "ASSET" is tradable
-    # IN: asset (string)
-    # OUT: True (exists) / False (does not exist)
+import gvars
 
-# GENERAL TREND CHECK
-# Load 30 - Min Candle : demand the API the 30-Min candles
-    # IN: asset (whatever API needs), time range*,candle size*
-    # OUT : 30-Min candles (OHLC for every candle)
+# check our trading account (blocked? total amount?)
+def check_account_ok() :
+    try :
+        print("Checking")
+    except Exception as e :
+        logging.error("Could not get account info")  
+        logging.info(str(e))
+        sys.exit()  
 
-# perform General Trend analysis: detect interesting trend (UP / DOWN / NO TREND) 
-    # IN: 30_Min candles data (Close data)
-    # OUT: UP / DOWN / NO TREND (strings)
-  # ---if NO TREND go back to "ECHO"
+# close current orders (doublecheck)
+def clean_open_orders() :
+    # open orders = list of open orders
+    logging.info("List of open orders")
+    logging.info(str(open_orders))
 
-    # LOOP_1 until timeout reached (ex. 30min) 
-    # POINT "DELTA"
+    for order in open_orders :
+        # close order
+        logging.info("order %s closed "% str(order.id))
 
-    # STEP 1: Load 5 - Min Candle
-        # IN: asset (whatever API needs), time range*,candle size*
-        # OUT : 5-Min candles (OHLC for every candle)
-        # --- go back to POINT "DELTA"
-    # STEP 2: Perform Instant Trend analysis: confirm the trend detected by GT analysis
-        # IN: 5 - Min candles date (Close data), output of the GT analysis (UP / DOWN string)
-        # OUT: True (confirmed) / False (not confirmed)
-        # --- go back to POINT "DELTA"
-    # STEP 3: Perform RSI analysis
-        # IN: 5 - Min candles date (Close data), output of the GT analysis (UP / DOWN string)
-        # OUT: True (confirmed) / False (not confirmed)
-        # --- go back to POINT "DELTA"
-    # STEP 4: Perform stochastic analysis
-        # IN: 5 - Min candles date (OHLC data), output of the GT analysis (UP / DOWN string)
-        # OUT: True (confirmed) / False (not confirmed)
-        # --- go back to POINT "DELTA"
+    logging.info("Closing orders complete") 
 
-# SUBMIT ORDER
-# Submit Order (limit order): interact with broker API
-    # IN: # number of shares to operate with, asset, desired price
-    # OUT: True (confirmed) / False (not confirmed), position ID
-    # if false, abort / go back to POINT ECHO
+# execute trading bot
+def main() :
+    
+    api = tradeapi.REST(gvars.API_KEY, gvars.API_SECRET_KEY, gvars.API_URL, '<key_id>', '<secret_key>', api_version="v2")
+    import pdb; pdb.set_trace()
 
-# Check the Position: see if the position exists
-    # IN: position ID
-    # OUT: True (confirmed) / False (not confirmed), position ID
-    # if false, abort / go back to POINT ECHO
+    # OUT: boolean tradingSuccess  (True = success / False = failure)
 
-# LOOP_1 until timeout reached (ex. ~8h)
-# "ENTER POSITION " MODE: check the condition in PARALLEL (LOOP_2) ---if not go to 1
-# IF Check Take Profit, if True -> close position
-    # IN: current gains (earning $)
-    # OUT: True / False
+    # initialize the logger (imported from logger)
+    initialize_logger()
 
-# ELIF Check Stop Loss, if True -> close position
-    # IN: current gains (loosing $)
-    # OUT: True / False
+    # check our trading account
+    check_account_ok()
 
-# ELIF Check Stochastic Crossing,Pull 5 OHLC data. if True -> close position
-    # STEP 1: pull 5 minutes OHLC data.
-        # IN: asset
-        # OUT: OHLC data (5min candles)
+    # close current orders
+    clean_open_orders()
 
-    # STEP 2: see whether the stochastic curves are crossing
-        # IN: OHLC data (5min candles)
-        # OUT: True / False
+    # get ticker
+    ticker = input("Write the ticker you want to operate with: ")
 
-# GET OUT
-# Submit Order (market order): interact with broker API
-    # IN: # number of shares to operate with, asset, position ID
-    # OUT: True (confirmed) / False (not confirmed)
-    # if false, retry until it works
+    trader = Trader(ticker) # initialize trading bot
+    trader.run() # run trading bot library
+       
+    if not tradingSuccess:
+        logging.info("Trading was not successful, locking asset") 
+        # wait whatever time
 
-# Check the Position: see if the position exists
-    # IN: position ID
-    # OUT: True (still exists!) / False (does not exist), position ID
-    # if false, abort / go back to SUBMIT ORDER
-
-# wait 15 min
-
-# END
-
-
+if __name__ == '__main__' :
+    main()

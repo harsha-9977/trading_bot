@@ -1,0 +1,8 @@
+2023-10-02 01:09:51,333-INFO:This is a Info message!
+2023-10-02 01:09:51,333-DEBUG:This is a Debug message!
+2023-10-02 01:09:51,333-WARNING:This is a Warning message!
+2023-10-02 01:09:51,333-ERROR:This is a Error message!
+2023-10-02 01:09:56,819-INFO:This is a Info message!
+2023-10-02 01:09:56,819-DEBUG:This is a Debug message!
+2023-10-02 01:09:56,819-WARNING:This is a Warning message!
+2023-10-02 01:09:56,819-ERROR:This is a Error message!
