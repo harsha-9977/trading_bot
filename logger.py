@@ -25,3 +25,4 @@ def initialize_logger() :
     lg.getLogger().addHandler(lg.StreamHandler())
     # init message
     lg.info("Log Initialized!")
+print(initialize_logger())
