@@ -16,7 +16,7 @@ def initialize_logger(logs_path='./logs/'):
         print("Successfully created log directory")
     except OSError as e:
         print(f"Creation of the directory {logs_path} failed: {e}")
-    
+
     # Generate log file with timestamped name
     date = datetime.now().strftime("%Y%m%d_%H%M%S")
     log_name = date + '.log'
@@ -24,7 +24,7 @@ def initialize_logger(logs_path='./logs/'):
 
     # Configure log parameters
     lg.basicConfig(filename=current_log_path, format="%(asctime)s - %(levelname)s: %(message)s", level=lg.DEBUG)
-    
+
     # Initialize logger
     lg.info("Log Initialized!")
 
@@ -37,8 +37,8 @@ def initialize_logger(logs_path='./logs/'):
 
 # Example usage:
 initialize_logger()
-lg.debug("Debug message")
-lg.info("Info message")
-lg.warning("Warning message")
-lg.error("Error message")
-lg.critical("Critical message")
+# lg.debug("Debug message")
+# lg.info("Info message")
+# lg.warning("Warning message")
+# lg.error("Error message")
+# lg.critical("Critical message")
