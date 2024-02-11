@@ -1,17 +1,17 @@
-# encoding: utf-8 
+# encoding: utf-8
 
-import logging
+import logging as lg
 import os
 from datetime import datetime
 
 def initialize_logger() :
 
     # creating a folder for the logs
-    logs_path = "./logs/"  # define the path
+    logs_path = './logs/'  # define the path
     try:
         os.mkdir(logs_path)
     except OSError:
-        print("Creation of the directory %s failed - it does not have to be bad" % logs_path)    
+        print("Creation of the directory %s failed - it does not have to be bad" % logs_path)
     else:
         print("Successfully created log directory")
 
@@ -21,9 +21,7 @@ def initialize_logger() :
     currentLog_path = logs_path + log_name
 
     # log parameters
-    logging.basicConfig(filename=currentLog_path, format="%(asctime)s - %(levelname)s: %(message)s",level=logging.DEBUG)
-   
+    lg.basicConfig(filename=currentLog_path, format="%(asctime)s - %(levelname)s: %(message)s",level=lg.DEBUG)
+    lg.getLogger().addHandler(lg.StreamHandler())
     # init message
-    logging.info("Log Initialized!")
-    
-
+    lg.info("Log Initialized!")
