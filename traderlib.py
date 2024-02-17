@@ -27,13 +27,13 @@ class Trader:
                 lg.info("The ticker %s is tradable!" % ticker)
                 return True
         except :
-            lg.info("The ticker %s is not answering well" % ticker)
+            lg.error("The ticker %s is not answering well" % ticker)
             return False
 
-    def set_stoploss(self,entryPrice,trend):    
+    def set_stoploss(self,entryPrice,trend):
         # takes a price as a input and sets the stoploss
             # IN: buying/entry price,trend (long/short)
-            # OUT: stop loss     
+            # OUT: stop loss
 
         try:
             if trend == "long":
@@ -46,15 +46,15 @@ class Trader:
                 return stopLoss
             else:
                 raise ValueError
-            
+
         except Exception as e:
-            lg.error("The trend value is not understood: %s" % str(trend))  
-            sys.exit() 
-    
+            lg.error("The trend value is not understood: %s" % str(trend))
+            sys.exit()
+
     def set_takeprofit(self,entryPrice,trend):
-        # takes a price as an input and sets the takeprofit 
-            # IN: buying/entry price , trend (long/short)  
-            # OUT: take profit 
+        # takes a price as an input and sets the takeprofit
+            # IN: buying/entry price , trend (long/short)
+            # OUT: take profit
 
         try:
             if trend == "long":
@@ -69,11 +69,11 @@ class Trader:
                 return takeProfit
             else:
                 raise ValueError
-            
+
         except Exception as e:
-            lg.error("The trend value is not understood: %s" % str(trend))  
-            sys.exit() 
-  
+            lg.error("The trend value is not understood: %s" % str(trend))
+            sys.exit()
+
     # load historical stock data:
         # IN: ticker,interval,entries limit
         # OUT: array with stock data (OHLC)
@@ -89,7 +89,7 @@ class Trader:
                 return True
             else:
                 return False
-         
+
     # submit order: get our order through the API (look/retry)
         # IN: order data (number of shares, order type)
         # OUT: boolean (True = order went through, False = order did not)
@@ -110,7 +110,7 @@ class Trader:
                     currentPrice = position.current_price
                     lg.info("The position was found, Current price is: %.2f" % currentPrice)
                     return True
-                except: 
+                except:
 
                     if doNotFind:
                         lg.info("Position not found, this is good!")
@@ -120,22 +120,22 @@ class Trader:
                     time.sleep(gvars.sleepTimeCP) # wait 5 seconds and retry
                     attempt += 1
 
-            lg.info("Position not found for %s, not waiting any more" % ticker)      
+            lg.info("Position not found for %s, not waiting any more" % ticker)
             return False
 
     def get_shares_amount(self,tickerPrice):
         # works out the number of shares I want to buy/sell
             # IN: tickerPrice
             # OUT: number of shares
-        
+
         lg.info("Getting shares amount")
 
         try:
             # get the total equity available
             # totalEquity = ask Alpaca API for availavle equity
-              
-            # calculate the number of shares 
-            sharesQuantity =int(gvars.maxSpentEquity / tickerPrice) 
+
+            # calculate the number of shares
+            sharesQuantity =int(gvars.maxSpentEquity / tickerPrice)
 
             lg.info("Total shares to operate with: %d" % sharesQuantity)
 
@@ -158,19 +158,19 @@ class Trader:
                 currentPrice = position.current_price
                 lg.info("The position was checked, Current price is %.2f" % currentPrice)
                 return currentPrice
-            except:  
+            except:
                 lg.info("Position not found, cannot check price, waiting for it...")
                 time.sleep(gvars.sleepTimeGCP) # wait 5 seconds and retry
                 attempt += 1
 
-        lg.error("Position not found for %s, not waiting any more" % ticker)      
+        lg.error("Position not found for %s, not waiting any more" % ticker)
         return False
 
     def get_general_trend(self,ticker):
         # get general trend: detect interesting trend (UP / DOWN / FALSE if not trend)
             # IN: ticker
             # OUT: UP / DOWN / NO TREND (strings)
-            # ---if NO TREND go back to "ECHO"  
+            # ---if NO TREND go back to "ECHO"
 
         lg.info("GENERAL TREND ANALYSIS entered")
 
@@ -203,22 +203,22 @@ class Trader:
                 else:
                     lg.info("Trend NOT detected and timeout reached for %s" % ticker)
                     return False
-                
+
         except Exception as e:
-            lg.error("Something went wrong at get general trend")  
+            lg.error("Something went wrong at get general trend")
             lg.error(e)
-            sys.exit()  
+            sys.exit()
 
     def get_instant_trend(self,ticker,trend):
-        # get instant trend: confirm the trend detected by GT analysis    
+        # get instant trend: confirm the trend detected by GT analysis
             # IN: ticker, trend (long / short)
             # OUT: True (confirmed) / False (not confirmed)
-        
+
         lg.info("INSTANT TREND ANALYSIS entered")
 
         attempt = 1
         maxAttempt = 10 # total time = maxAttempt * 30sec (as implemented)
-    
+
 
         try:
             while True:
@@ -245,20 +245,20 @@ class Trader:
                     lg.info("Trend NOT detected and timeout reached for %s" % ticker)
                     return False
         except Exception as e:
-            lg.error("Something went wrong at get instant trend")  
+            lg.error("Something went wrong at get instant trend")
             lg.error(e)
-            sys.exit()  
+            sys.exit()
 
     def get_rsi(self,ticker,trend):
-        # get rsi: perform RSI analysis 
+        # get rsi: perform RSI analysis
             # IN: ticker, trend
             # OUT: True (confirmed) / False (not confirmed)
 
-        lg.info("RSI ANALYSIS entered") 
+        lg.info("RSI ANALYSIS entered")
 
         attempt = 1
         maxAttempt = 10 # total time = maxAttempt * 20sec (as implemented)
-    
+
 
         try:
             while True:
@@ -283,20 +283,20 @@ class Trader:
                     lg.info("Trend NOT detected and timeout reached for %s" % ticker)
                     return False
         except Exception as e:
-            lg.error("Something went wrong at rsi analysis")  
+            lg.error("Something went wrong at rsi analysis")
             lg.error(e)
-            sys.exit()   
+            sys.exit()
 
     def get_stochastic(self,ticker,trend):
         # get stochastic: perform STOCHASTIC analysis
             # IN: ticker ,trend
             # OUT: True (confirmed) / False (not confirmed)
-        
-        lg.info("STOCHASTIC ANALYSIS entered") 
+
+        lg.info("STOCHASTIC ANALYSIS entered")
 
         attempt = 1
         maxAttempt = 20 # total time = maxAttempt * 10sec (as implemented)
-    
+
 
         try:
             while True:
@@ -321,9 +321,9 @@ class Trader:
                     lg.info("Trend NOT detected and timeout reached for %s" % ticker)
                     return False
         except Exception as e:
-            lg.error("Something went wrong at stochastic analysis")  
+            lg.error("Something went wrong at stochastic analysis")
             lg.error(e)
-            sys.exit()  
+            sys.exit()
 
     def check_stochastic_crossing(self,ticker,trend):
         # check whether the stochastic curves have crossed or not
@@ -349,7 +349,7 @@ class Trader:
             else:
                 lg.info("Stochastic curves have not crossed")
                 return False
-            
+
         except Exception as e:
             lg.error("Something went wrong at check stochastic crossing")
             lg.error(e)
@@ -372,17 +372,17 @@ class Trader:
             while True:
 
                 currentPrice = get_current_price(ticker)
-                
+
                 # check if take Profit met
                 # LONG/UP version
                 if (trend == "long") and (currentPrice >= takeProfit):
                     lg.info("Take profit met at %.2f. Current price is%.2f" % (takeProfit,currentPrice))
-                    return True 
+                    return True
                 # SHORT/DOWN version
                 elif (trend == "short") and (currentPrice <= takeProfit):
                     lg.info("Take profit met at %.2f. Current price is%.2f" % (takeProfit,currentPrice))
                     return True
-                
+
                 # check if stop loss is met
                 # LONG/UP version
                 elif (trend == "long") and (currentPrice <= stopLoss):
@@ -391,13 +391,13 @@ class Trader:
                 # SHORT/DOWN version
                 elif (trend == "short") and (currentPrice <= stopLoss):
                     lg.info("Stop loss met at %.2f. Current price is %.2f" % (stopLoss,currentPrice))
-                    return False    
+                    return False
 
                 # check stochastic crossing
                 elif check_stochastic_crossing(ticker,trend):
                     lg.info("Stochastic curves crossed. Current price is %.2f" % currentPrice)
                     return True
-                
+
                 # we wait
                 elif attempt <= maxAttempt:
                     lg.info("Waiting inside position, attempt #&d" % attempt)
@@ -408,13 +408,13 @@ class Trader:
                 else:
                     lg.info("Timeout reached at enter position, too late")
                     return False
-                
+
         except Exception as e:
             lg.error("Something happend at your position function")
             lg.error(e)
             return True
 
-    def run(self) : 
+    def run(self) :
 
         # LOOP until timeout reached (ex. 2h)
         while True:
@@ -423,7 +423,7 @@ class Trader:
             if check_position(self.ticker,doNotFind=True):
                 lg.info("There is already an open position with that ticker! Aborting...")
                 return False # aborting execution
-            
+
             # POINT DELTA
 
             while True:
@@ -433,12 +433,12 @@ class Trader:
                 if not trend:
                     lg.info("No general trend found for %s! Going out..." % self.ticker)
                     return False # aborting execution
-                
+
                 # confirm instant trend
                 if not get_instant_trend(self.ticker,trend):
                     lg.info("The instant trend is not confirmed. Going back")
                     continue # if failed --- go back to POINT "DELTA"
-                    
+
                 # perform RSI analysis
                 if not get_rsi(self.ticker,trend):
                     lg.info("Then rsi is not confirmed. Going back")
@@ -448,7 +448,7 @@ class Trader:
                 if not get_stochastic(self.ticker,trend):
                     lg.info("Then stochastic is not confirmed. Going back")
                     continue # if failed --- go back to POINT "DELTA"
-                
+
                 lg.info("All filtering passed, carring on with the order!")
                 break
 
@@ -465,10 +465,10 @@ class Trader:
             if not check_position(self.ticker):
                 # cancel pending order
                 continue # go back to POINT ECHO
-            
+
             # enter position mode
             successfullOperation = enter_position_mode(self.ticker,trend)
-               
+
 
             # GET OUT
             while True:
@@ -480,7 +480,4 @@ class Trader:
                 time.sleep(10) # wait 10 seconds
 
             # END of execution
-            return successfullOperation    
-           
-
-
+            return successfullOperation

@@ -2,7 +2,11 @@
 
 # import needed libraries
 #from traderlib import *
-from logger import *
+# from logger import *
+from loggi import *
+# initialize_logger()
+initialize_logger()
+
 import sys
 
 import alpaca_trade_api as tradeapi
@@ -14,21 +18,21 @@ def check_account_ok() :
     try :
         print("Checking")
     except Exception as e :
-        logging.error("Could not get account info")
-        logging.info(str(e))
+        lg.error("Could not get account info")
+        lg.info(str(e))
         sys.exit()
 
 # close current orders (doublecheck)
 def clean_open_orders() :
     # open orders = list of open orders
-    logging.info("List of open orders")
-    logging.info(str(open_orders))
+    lg.info("List of open orders")
+    lg.info(str(open_orders))
 
     for order in open_orders :
         # close order
-        logging.info("order %s closed "% str(order.id))
+        lg.info("order %s closed " % str(order.id))
 
-    logging.info("Closing orders complete")
+    lg.info("Closing orders complete")
 
 # execute trading bot
 def main() :
@@ -54,7 +58,7 @@ def main() :
     trader.run() # run trading bot library
 
     if not tradingSuccess:
-        logging.info("Trading was not successful, locking asset")
+        lg.info("Trading was not successful, locking asset")
         # wait whatever time
 
 if __name__ == '__main__' :
