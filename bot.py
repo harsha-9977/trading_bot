@@ -1,11 +1,11 @@
 # encoding: utf-8
 
 # import needed libraries
-#from traderlib import *
-# from logger import *
-from loggi import *
+# from traderlib import *
+from logger import *
+# from loggi import *
 # initialize_logger()
-initialize_logger()
+# initialize_logger()
 
 import sys
 
@@ -14,9 +14,12 @@ import alpaca_trade_api as tradeapi
 import gvars
 
 # check our trading account (blocked? total amount?)
-def check_account_ok() :
+def check_account_ok(api) :
     try :
-        print("Checking")
+        account = api.get_account()
+        if account.status != 'ACTIVE':
+            lg.error("The account is not ACTIVE, aborting")
+            sys.exit()
     except Exception as e :
         lg.error("Could not get account info")
         lg.info(str(e))
@@ -24,7 +27,7 @@ def check_account_ok() :
 
 # close current orders (doublecheck)
 def clean_open_orders() :
-    # open orders = list of open orders
+    open orders = list of open orders
     lg.info("List of open orders")
     lg.info(str(open_orders))
 
@@ -37,8 +40,7 @@ def clean_open_orders() :
 # execute trading bot
 def main() :
 
-    api = tradeapi.REST(gvars.API_KEY, gvars.API_SECRET_KEY, gvars.API_URL, '<key_id>', '<secret_key>', api_version="v2")
-    import pdb; pdb.set_trace()
+    api = tradeapi.REST(gvars.API_KEY, gvars.API_SECRET_KEY, gvars.API_URL)
 
     # OUT: boolean tradingSuccess  (True = success / False = failure)
 
@@ -46,7 +48,7 @@ def main() :
     initialize_logger()
 
     # check our trading account
-    check_account_ok()
+    check_account_ok(api)
 
     # close current orders
     clean_open_orders()
