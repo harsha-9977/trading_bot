@@ -1,8 +1,8 @@
 # encoding: utf-8
 
 # REST API
-API_KEY = "PKU3JHWNZWUZA9RBJDDB"
-API_SECRET_KEY = "0DmfOX2ShSQX14FmGNxgc1R5nQC0ub1jiJta5mM0"
+API_KEY = "PKPDIG7RM8V6G5CY9HPG"
+API_SECRET_KEY = "4iObWYCIm7mp2L1Ix7m5g1vg5hT9gtbhiHUxlc9U"
 API_URL = "https://paper-api.alpaca.markets"
 
 stopLossMargin = 0.05 # percentage margin for the stop loss
