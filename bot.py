@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 # import needed libraries
-# from traderlib import *
+from traderlib import *
 from logger import *
 # from loggi import *
 # initialize_logger()
@@ -26,16 +26,17 @@ def check_account_ok(api) :
         sys.exit()
 
 # close current orders (doublecheck)
-def clean_open_orders() :
-    open orders = list of open orders
-    lg.info("List of open orders")
-    lg.info(str(open_orders))
+def clean_open_orders(api) :
 
-    for order in open_orders :
-        # close order
-        lg.info("order %s closed " % str(order.id))
+    lg.info("Cancelling all orders...")
 
-    lg.info("Closing orders complete")
+    try:
+        api.cancel_all_orders()
+        lg.info("All orders cancelled")
+    except Exception as e:
+        lg.error("Could not cancel all orders")
+        lg.error(e)
+        sys.exit()
 
 # execute trading bot
 def main() :
@@ -51,7 +52,8 @@ def main() :
     check_account_ok(api)
 
     # close current orders
-    clean_open_orders()
+    clean_open_orders(api)
+    import pdb; pdb.set_trace()
 
     # get ticker
     ticker = input("Write the ticker you want to operate with: ")

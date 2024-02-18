@@ -14,6 +14,7 @@ class Trader:
     def __init__(self,ticker):
         lg.info("Trader initialized with ticker" % ticker)
         self.ticker = ticker
+        
     def is_tradable(self,ticker):
         # ask the broker/API if "ticker" is tradable
             # IN: ticker (string)
