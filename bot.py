@@ -70,7 +70,7 @@ def main():
 
     # get ticker
     #ticker = input('Write the ticker you want to operate with: ')
-    ticker = 'TSLA'
+    ticker = 'NDAQ'
 
     check_asset_ok(api,ticker)
 
